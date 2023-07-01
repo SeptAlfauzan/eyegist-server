@@ -1,0 +1,44 @@
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>Receiver</title>
+    <script src='/socket.io/socket.io.js'></script>
+    <link href='/output.css' rel='stylesheet' />
+    <script src='https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js'></script>
+</head>
+
+<body class='bg-slate-900 h-full w-full text-slate-600 flex flex-col justify-center items-center'>
+    <h5 class='mt-5 text-center'>
+        Receiver, You will receive video from Another Client
+    </h5>
+    <div class='lg:w-[34%] w-[76%] lg:h-[34%] h-[24%] bg-slate-700 align-middle rounded-md mt-10 overflow-clip'>
+        <video id='videoElement' class='w-full h-full object-cover bg-clip-border overflow-clip' autoplay></video>
+    </div>
+
+    <img id="play" alt="">
+</body>
+<script>
+    const videoElement = document.getElementById('videoElement');
+    const socket = io();
+    const mediaSource = new MediaSource();
+    var img = document.getElementById('play');
+
+
+    mediaSource.addEventListener('sourceopen', function () {
+        socket.on('onVideoStream', (data) => {
+            var sourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="opus,vp8"');
+
+            console.log(data.body)
+            sourceBuffer.appendBuffer(data.body)
+            img.src = window.URL.createObjectURL(data.body);
+            $('#logger').text(image);
+
+        })
+    })
+
+    videoElement.src = window.URL.createObjectURL(mediaSource);
+
+</script>
+
+</html>

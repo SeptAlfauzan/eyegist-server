@@ -5,6 +5,8 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
+import { log } from 'console';
+import { loadavg } from 'os';
 
 import { Server } from 'socket.io';
 
@@ -29,6 +31,20 @@ export class SocketGatewayGateway implements OnModuleInit {
   onNewMessage(@MessageBody() body: any) {
     this.server.emit('onMessage', {
       message: 'New Message',
+      body: body,
+    });
+  }
+
+  @SubscribeMessage('video-stream')
+  handleVideoStream(client: any, payload: any): string {
+    return 'Hello world!';
+  }
+
+  @SubscribeMessage('video-stream')
+  onNewVideoStream(@MessageBody() body: any) {
+    console.log(body);
+    this.server.emit('onVideoStream', {
+      message: 'new video stream',
       body: body,
     });
   }
