@@ -1,98 +1,43 @@
 <html>
 
-<head>
-  <meta charset='utf-8' />
-  <title>App</title>
-  <script src='/socket.io/socket.io.js'></script>
-  <link href='/output.css' rel='stylesheet' />
-  <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
-</head>
+  <head>
+    <meta charset='utf-8' />
+    <title>App</title>
+    <script src='/socket.io/socket.io.js'></script>
+    <link href='/output.css' rel='stylesheet' />
+    <script src='https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js'></script>
+  </head>
 
-<body class='bg-slate-900 h-full w-full text-slate-600 flex flex-col justify-center items-center'>
-  <h5 class='mt-5 text-center'>
-    Demo, Your Video Will Transmit to Another Client
-  </h5>
-  <div
-    class='lg:w-[34%] w-[76%] lg:h-[34%] h-[24%] bg-gradient-to-r from-violet-500 to-fuchsia-500 align-middle rounded-md mt-10 overflow-clip'>
-    <video id='videoElement' class='w-full h-full object-cover bg-clip-border overflow-clip' autoplay></video>
-  </div>
-  <div class='flex'>
-    <button
-      class='m-2 lg:w-[4rem] w-[6rem] lg:h-[4rem] h-[6rem] lg:text-lg text-4xl bg-red-500   hover:scale-110 rounded-full text-white'
-      id="toggleButton">
-      🎥
-    </button>
-    <button
-      class='m-2 lg:w-[4rem] w-[6rem] lg:h-[4rem] h-[6rem] lg:text-lg text-4xl bg-red-500 hover:scale-110 rounded-full text-white'
-      id="toggleAudio">
-      🎤
-    </button>
-  </div>
-</body>
-<script>
-
-
-  let isCameraOpen = true;
-  let isAudioOn = true;
-  let mediaStream = null;
-
-  const toggleCameraButton = document.getElementById('toggleButton');
-  const toggleAudioButton = document.getElementById('toggleAudio');
-  const videoElement = document.getElementById('videoElement');
-
-  toggleCameraButton.addEventListener('click', toggleCamera)
-  toggleAudioButton.addEventListener('click', toggleAudio)
-
-  const socket = io();
-
-  function toggleCamera() {
-    isCameraOpen = !isCameraOpen
-    isCameraOpen ? startCamera() : stopCamera();
-    toggleCameraButton.classList.toggle('bg-red-500')
-    toggleCameraButton.classList.toggle('bg-slate-500')
-  }
-
-  function toggleAudio() {
-    isAudioOn = !isAudioOn
-    if (mediaStream) {
-      mediaStream.getAudioTracks().forEach(track => {
-        track.enabled = isAudioOn;
-      });
-    }
-    toggleAudioButton.classList.toggle('bg-red-500')
-    toggleAudioButton.classList.toggle('bg-slate-500')
-  }
-
-  function startCamera() {
-    navigator.mediaDevices.getUserMedia({ video: true, audio: isAudioOn, })
-      .then((stream) => {
-        //console.log(stream);
-
-        let mediaRecorder = new MediaRecorder(stream)
-        mediaRecorder.ondataavailable = (e) => {
-          socket.emit('video-stream', { message: 'new video stream data frame', body: e.data })
-        }
-
-        mediaRecorder.start(1000)
-
-        mediaStream = stream;
-        videoElement.srcObject = stream;
-
-        socket.emit('video-stream',
-          stream
-        );
-      });
-  }
-
-  function stopCamera() {
-    if (mediaStream) { // Stop the camera stream
-      mediaStream.getTracks().forEach(track => { track.stop(); });
-      mediaStream = null;
-      videoElement.srcObject = null;
-    }
-  }
-
-  isCameraOpen ? startCamera() : stopCamera();
-</script>
+  <body
+    class='bg-slate-900 h-full w-full text-slate-600 flex flex-col justify-center items-center'
+  >
+    <h5 class='mt-5 text-center'>
+      Demo, Your Video Will Transmit to Another Client
+    </h5>
+    <div
+      class='lg:w-[34%] w-[76%] lg:h-[34%] h-[24%] bg-gradient-to-r from-violet-500 to-fuchsia-500 align-middle rounded-md mt-10 overflow-clip'
+    >
+      <video
+        id='videoElement'
+        class='w-full h-full object-cover bg-clip-border overflow-clip'
+        autoplay
+      ></video>
+    </div>
+    <div class='flex'>
+      <button
+        class='m-2 lg:w-[4rem] w-[6rem] lg:h-[4rem] h-[6rem] lg:text-lg text-4xl bg-red-500 hover:scale-110 rounded-full text-white'
+        id='toggleButton'
+      >
+        🎥
+      </button>
+      <button
+        class='m-2 lg:w-[4rem] w-[6rem] lg:h-[4rem] h-[6rem] lg:text-lg text-4xl bg-red-500 hover:scale-110 rounded-full text-white'
+        id='toggleAudio'
+      >
+        🎤
+      </button>
+    </div>
+  </body>
+  <script src='/js/client-sender.js' type='module'></script>
 
 </html>

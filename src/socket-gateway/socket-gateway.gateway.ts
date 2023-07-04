@@ -41,11 +41,10 @@ export class SocketGatewayGateway implements OnModuleInit {
   }
 
   @SubscribeMessage('video-stream')
-  onNewVideoStream(@MessageBody() body: any) {
-    console.log(body);
+  onNewVideoStream(@MessageBody() body: VideoStream) {
     this.server.emit('onVideoStream', {
       message: 'new video stream',
-      body: body,
+      data: body.data,
     });
   }
 }

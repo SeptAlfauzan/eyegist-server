@@ -12,33 +12,15 @@
     <h5 class='mt-5 text-center'>
         Receiver, You will receive video from Another Client
     </h5>
-    <div class='lg:w-[34%] w-[76%] lg:h-[34%] h-[24%] bg-slate-700 align-middle rounded-md mt-10 overflow-clip'>
+    <!-- <div class='lg:w-[34%] w-[76%] lg:h-[34%] h-[24%] bg-slate-700 align-middle rounded-md mt-10 overflow-clip'>
         <video id='videoElement' class='w-full h-full object-cover bg-clip-border overflow-clip' autoplay></video>
+    </div> -->
+
+    <div class='lg:w-[34%] w-[76%] lg:h-[34%] h-[44%] bg-slate-700 align-middle rounded-md mt-10 overflow-clip'>
+        <img id="play" alt="" class="w-full h-full object-cover bg-clip-border"
+            src="https://plus.unsplash.com/premium_photo-1680742508463-acb8c21af3bf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=400&q=60">
     </div>
-
-    <img id="play" alt="">
 </body>
-<script>
-    const videoElement = document.getElementById('videoElement');
-    const socket = io();
-    const mediaSource = new MediaSource();
-    var img = document.getElementById('play');
-
-
-    mediaSource.addEventListener('sourceopen', function () {
-        socket.on('onVideoStream', (data) => {
-            var sourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="opus,vp8"');
-
-            console.log(data.body)
-            sourceBuffer.appendBuffer(data.body)
-            img.src = window.URL.createObjectURL(data.body);
-            $('#logger').text(image);
-
-        })
-    })
-
-    videoElement.src = window.URL.createObjectURL(mediaSource);
-
-</script>
+<script src="/js/client-receiver.js"></script>
 
 </html>
